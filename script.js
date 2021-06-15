@@ -68,7 +68,7 @@ class ItemGrid{
 		this.tooltip.box.appendChild(this.tooltip.title)
 		this.tooltip.box.appendChild(this.tooltip.description)
 		document.body.appendChild(this.tooltip.box)
-		addEventListener("click", this.click.bind(this))
+		addEventListener("mousedown", this.click.bind(this))
 		addEventListener("contextmenu", this.click.bind(this))
 		addEventListener("mousemove", this.mousemove.bind(this))
 		document.body.addEventListener("keydown", this.keydown.bind(this))
@@ -113,6 +113,7 @@ class ItemGrid{
 			this.movedItem.element.remove()
 			this.movedItem = null
 		}
+		this.creative = false
 		experience = {
 			spent: 0,
 			goal: 0
@@ -123,29 +124,25 @@ class ItemGrid{
 		var tooltip = this.tooltip.box
 		if(this.movedItem){
 			this.movedItem.element.style.transform = "translate(" + Math.floor(event.clientX / 2 - 8) * 2 + "px, " + Math.floor(event.clientY / 2 - 8) * 2 + "px)"
-			this.tooltip.shown = false
-			tooltip.style.display = ""
-			return
-		}
-		if(this.outer.has(event.target)){
-			lastTarget = event.target
-			var index = event.target.dataset.index
-			if(this.grid[index].item){
-				this.tooltip.shown = true
-				tooltip.style.transform = "translate(" + Math.floor(event.clientX / 2 + 8) * 2 + "px, " + Math.floor(event.clientY / 2 - 16) * 2 + "px)"
-				this.setTooltip(this.grid[index])
-				tooltip.style.display = "block"
-			}else{
-				this.tooltip.shown = false
-				tooltip.style.display = ""
-			}
 		}else{
-			if(this.tooltip.shown){
-				this.tooltip.shown = false
-				tooltip.style.display = ""
+			if(this.outer.has(event.target)){
+				lastTarget = event.target
+				var index = event.target.dataset.index
+				if(this.grid[index].item){
+					this.tooltip.shown = true
+					this.setTooltip(this.grid[index])
+					tooltip.style.visibility = "visible"
+					return
+				}
+			}else{
+				lastTarget = null
+				if(!this.tooltip.shown){
+					return
+				}
 			}
-			lastTarget = null
 		}
+		this.tooltip.shown = false
+		tooltip.style.visibility = ""
 	}
 	keydown(event){
 		if(!event.repeat && lastTarget && event.key >= 1 && event.key <= 9){
@@ -174,6 +171,7 @@ class ItemGrid{
 		this.tooltip.title.textContent = item
 		this.tooltip.title.style.color = items[item].rarity === "uncommon" ? "#fcfc54" : ""
 		this.tooltip.title.style.textShadow = items[item].rarity === "uncommon" ? "0.125em 0.125em 0 #3e3e15;" : ""
+		this.tooltip.description.innerText = ""
 		if(items[item].description || grid.enchants){
 			var description = []
 			if(grid.enchants){
@@ -182,13 +180,25 @@ class ItemGrid{
 					if(level && level < romanNumerals.length){
 						level = romanNumerals[level]
 					}
-					description.push(grid.enchants[i].name + (level ? (" " + level) : ""))
+					var enchantName = grid.enchants[i].name + (level ? (" " + level) : "")
+					if(enchantName.startsWith("Curse")){
+						var span = document.createElement("span")
+						span.textContent = enchantName
+						span.style.color = "#fc5454"
+						span.style.textShadow = "0.125em 0.125em 0 #3e1515"
+						description.push(span)
+					}else{
+						description.push(document.createTextNode(enchantName))
+					}
 				}
 			}
 			if(items[item].description){
-				description.push(items[item].description.text)
+				description.push(document.createTextNode(items[item].description.text))
 			}
-			this.tooltip.description.textContent = description.join("\n")
+			for(var i = description.length; --i > 0;){
+				description.splice(i, 0, document.createElement("br"))
+			}
+			description.forEach(element => this.tooltip.description.appendChild(element))
 			if(items[item].description && items[item].description.effect){
 				var div = document.createElement("div")
 				div.style.color = "#" + items[item].description.color
@@ -196,9 +206,14 @@ class ItemGrid{
 				div.textContent = items[item].description.effect
 				this.tooltip.description.appendChild(div)
 			}
-		}else{
-			this.tooltip.description.textContent = ""
 		}
+		var x = Math.floor(event.clientX / 2 + 8) * 2
+		var y = Math.floor(event.clientY / 2 - 16) * 2
+		var h = this.tooltip.box.offsetHeight
+		if(y + h > innerHeight - 6){
+			y = Math.max(6, innerHeight - 6 - h)
+		}
+		this.tooltip.box.style.transform = "translate(" + x + "px, " + y + "px)"
 	}
 	click(event){
 		var movedItem = this.movedItem
@@ -291,6 +306,62 @@ class ItemGrid{
 		}
 		return cost
 	}
+	getGoal(enchants, onlyBooks){
+		var books = []
+		for(var j in enchants){
+			books.push({
+				enchants: [enchants[j]],
+				repairCost: 0
+			})
+		}
+		var cost = 0
+		var finalEnchants = []
+		var toolRepairCost = 0
+		if(onlyBooks){
+			finalEnchants = finalEnchants.concat(books[0].enchants)
+			books.shift()
+		}
+		while(books.length){
+			var length = books.length
+			var otherIndex = 0
+			for(var j = 0; j < length - otherIndex; j++){
+				var otherBook = books[j]
+				var currentCost = 0
+				if(j === 0 || j === 1 && length % 2 === 0 || length <= 3){
+					currentCost += toolRepairCost + books[j].repairCost
+					toolRepairCost = (toolRepairCost << 1) + 1
+					finalEnchants = finalEnchants.concat(books[j].enchants)
+				}else{
+					var currentBook = books[j]
+					if(length <= 8){
+						otherBook = books[length - ++otherIndex]
+					}else{
+						otherBook = books[++j]
+					}
+					books.push({
+						enchants: currentBook.enchants.concat(otherBook.enchants),
+						repairCost: (Math.max(currentBook.repairCost, otherBook.repairCosts) << 1) + 1
+					})
+					currentCost += currentBook.repairCost + otherBook.repairCost
+				}
+				for(var k in otherBook.enchants){
+					currentCost += bookCost[otherBook.enchants[k].name] * (otherBook.enchants[k].level || 1)
+				}
+				if(currentCost > 39 && !this.creative){
+					cost += Infinity
+					books = []
+					length = 0
+					break
+				}else{
+					cost += currentCost
+				}
+			}
+			for(var j = 0; j < length; j++){
+				books.shift()
+			}
+		}
+		return cost
+	}
 	update(){
 		experienceDiv.textContent = ""
 		experienceDiv.appendChild(document.createTextNode("XP Spent: "))
@@ -299,7 +370,7 @@ class ItemGrid{
 		experienceDiv.appendChild(span)
 		experienceDiv.appendChild(document.createTextNode(", XP Goal: "))
 		var span = document.createElement("span")
-		span.textContent = experience.goal
+		span.textContent = experience.goal === Infinity ? "Too Expensive!" : experience.goal
 		experienceDiv.appendChild(span)
 		this.parent.classList[this.grid[36].item ? "add" : "remove"]("rename")
 		var enchanting = this.grid[36].item && this.grid[37].item === "Enchanted Book"
@@ -308,7 +379,8 @@ class ItemGrid{
 		if(textInput.textContent !== itemName){
 			textInput.textContent = itemName
 		}
-		if(this.grid[36].repairCost > 39 || enchanting && this.getCost() > 39){
+		var expensive = this.grid[36].repairCost > 39 || enchanting && this.getCost() > 39
+		if(!this.creative && expensive){
 			this.replaceItem(38)
 			this.parent.classList.add("cross")
 			var costText = "Too Expensive!"
@@ -325,7 +397,7 @@ class ItemGrid{
 			if(costDiv.textContent !== costText){
 				costDiv.textContent = costText
 			}
-			costDiv.classList.remove("expensive")
+			costDiv.classList[expensive ? "add" : "remove"]("expensive")
 			costDiv.style.display = "block"
 		}else{
 			this.replaceItem(38)
@@ -354,12 +426,18 @@ class ItemGrid{
 			name: i,
 			callback: event => {
 				itemGrid.clearItems()
-				itemGrid.replaceItem(0, bestEnchants[i][0])
-				var index = 1
+				itemGrid.creative = i === "Enchanted Book"
+				if(bestEnchants[i][0] === null){
+					var index = 0
+				}else{
+					itemGrid.replaceItem(0, bestEnchants[i][0])
+					var index = 1
+				}
 				var enchants = []
 				for(var j = 1; j < bestEnchants[i].length; j++){
 					var enchantText = bestEnchants[i][j]
 					if(Array.isArray(enchantText)){
+						// Todo: Let the user choose which incompatible enchants they want to have
 						enchantText = enchantText[0]
 					}
 					var enchantObj = {
@@ -372,40 +450,7 @@ class ItemGrid{
 					enchants.push(enchantObj)
 				}
 				enchants = enchants.sort((a, b) => bookCost[a.name] * (a.level || 1) < bookCost[b.name] * (b.level || 1) ? 1 : -1)
-				var books = []
-				for(var j in enchants){
-					books.push({
-						enchants: [enchants[j]],
-						repairCost: 0
-					})
-				}
-				var cost = 0
-				var toolRepairCost = 0
-				while(books.length){
-					var length = books.length
-					var otherIndex = 0
-					for(var j = 0; j < length - otherIndex; j++){
-						var otherBook = books[j]
-						if(j === 0 || j === 1 && length % 2 === 0 || books[j].enchants.length >= 2){
-							cost += toolRepairCost + books[j].repairCost
-							toolRepairCost = (toolRepairCost << 1) + 1
-						}else{
-							var otherBook = books[length - ++otherIndex]
-							books.push({
-								enchants: books[j].enchants.concat(otherBook.enchants),
-								repairCost: (Math.max(books[j].repairCost, otherBook.repairCosts) << 1) + 1
-							})
-							cost += books[j].repairCost + otherBook.repairCost
-						}
-						for(var k in otherBook.enchants){
-							cost += bookCost[otherBook.enchants[k].name] * (otherBook.enchants[k].level || 1)
-						}
-					}
-					for(var j = 0; j < length; j++){
-						books.shift()
-					}
-				}
-				experience.goal = cost
+				experience.goal = itemGrid.getGoal(enchants, index === 0)
 				itemGrid.update()
 				if(randomCheckbox.checked){
 					enchants = enchants.sort(() => Math.random() < 0.5 ? 1 : -1)

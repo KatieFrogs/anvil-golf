@@ -48,7 +48,7 @@ var bestEnchants = {
 		"Mending",
 		"Efficiency 5",
 		["Sharpness 5", "Smite 5", "Bane of Arthropods 5"],
-		["Silk Touch", "Fortune 3"]
+		["Fortune 3", "Silk Touch"]
 	],
 	"Bow": [
 		"Bow",
@@ -78,21 +78,21 @@ var bestEnchants = {
 		"Unbreaking 3",
 		"Mending",
 		"Efficiency 5",
-		["Silk Touch", "Fortune 3"]
+		["Fortune 3", "Silk Touch"]
 	],
 	"Shovel": [
 		"Netherite Shovel",
 		"Unbreaking 3",
 		"Mending",
 		"Efficiency 5",
-		["Silk Touch", "Fortune 3"]
+		["Fortune 3", "Silk Touch"]
 	],
 	"Hoe": [
 		"Netherite Hoe",
 		"Unbreaking 3",
 		"Mending",
 		"Efficiency 5",
-		["Silk Touch", "Fortune 3"]
+		["Fortune 3", "Silk Touch"]
 	],
 	"Fishing Rod": [
 		"Fishing Rod",
@@ -131,6 +131,36 @@ var bestEnchants = {
 		"Elytra",
 		"Unbreaking 3",
 		"Mending"
+	],
+	"Enchanted Book": [
+		null,
+		"Protection 4",
+		"Thorns 3",
+		"Respiration 3",
+		"Depth Strider 3",
+		"Aqua Affinity",
+		"Sharpness 5",
+		"Knockback 2",
+		"Fire Aspect 2",
+		"Looting 3",
+		"Efficiency 5",
+		"Unbreaking 3",
+		"Fortune 3",
+		"Power 5",
+		"Punch 2",
+		"Flame",
+		"Infinity",
+		"Luck of the Sea 3",
+		"Lure 3",
+		"Curse of Binding",
+		"Curse of Vanishing",
+		"Impaling 5",
+		"Loyalty 3",
+		"Channeling",
+		"Piercing 4",
+		"Quick Charge 3",
+		"Soul Speed 3",
+		"Sweeping Edge 3"
 	]
 }
 var romanNumerals = ["0", "I", "II", "III", "IV", "V"]

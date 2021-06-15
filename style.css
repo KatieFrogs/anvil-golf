@@ -151,7 +151,7 @@ body{
 }
 
 .tooltip{
-	display: none;
+	visibility: hidden;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -196,6 +196,7 @@ body{
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+	min-width: 200px;
 	height: 332px;
 	overflow: auto;
 	padding-right: 8px;
@@ -209,7 +210,9 @@ button{
 	image-rendering: optimizeSpeed;
 	image-rendering: pixelated;
 	user-select: none;
-	min-height: 36px;
+	min-height: 16px;
+	box-sizing: content-box;
+	white-space: nowrap;
 }
 button:hover{
 	border-image-source: url(button-hover.png);
