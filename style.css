@@ -34,6 +34,7 @@ body{
 	background-image: url(anvil-ui.png);
 	background-repeat: no-repeat;
 	background-size: 512px;
+	image-rendering: optimizeSpeed;
 	image-rendering: pixelated;
 }
 #anvil-ui::before,
@@ -93,10 +94,13 @@ body{
 	position: absolute;
 	left: 124px;
 	top: 48px;
+	width: 210px;
 	color: #fff;
 	text-shadow: 0.125em 0.125em 0 #3e3e3e;
 	cursor: default;
 	user-select: none;
+	white-space: nowrap;
+	overflow: hidden;
 }
 .grid{
 	position: absolute;
@@ -122,6 +126,7 @@ body{
 	background-image: url(items.png);
 	background-repeat: no-repeat;
 	background-size: auto 136px;
+	image-rendering: optimizeSpeed;
 	image-rendering: pixelated;
 }
 .grid[data-item="Enchanted Book"] .item{
@@ -194,7 +199,9 @@ button{
 	color: #fff;
 	text-shadow: 0.125em 0.125em 0 #373737;
 	padding: 8px;
-	border-image: url(button.png) 2 2 3 fill / 4px 4px 6px / 0px repeat;
+	border-style: solid;
+	border-image: url("button.png") 2 2 3 fill / 4px 4px 6px / 0px repeat;
+	image-rendering: optimizeSpeed;
 	image-rendering: pixelated;
 	user-select: none;
 }
