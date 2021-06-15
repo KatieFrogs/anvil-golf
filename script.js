@@ -308,7 +308,7 @@ class ItemGrid{
 		if(textInput.textContent !== itemName){
 			textInput.textContent = itemName
 		}
-		if(this.grid[36].repairCost > 31){
+		if(this.grid[36].repairCost > 39 || enchanting && this.getCost() > 39){
 			this.replaceItem(38)
 			this.parent.classList.add("cross")
 			var costText = "Too Expensive!"
@@ -319,7 +319,8 @@ class ItemGrid{
 			costDiv.style.display = "block"
 		}else if(enchanting){
 			var enchants = (this.grid[36].enchants || []).concat(this.grid[37].enchants || [])
-			this.replaceItem(38, this.grid[36].item, enchants, (this.grid[36].repairCost << 1) + 1)
+			var repairCost = this.grid[36].repairCost > this.grid[37].repairCost ? this.grid[36].repairCost : this.grid[37].repairCost
+			this.replaceItem(38, this.grid[36].item, enchants, (repairCost << 1) + 1)
 			var costText = "Enchantment Cost: " + this.getCost()
 			if(costDiv.textContent !== costText){
 				costDiv.textContent = costText
@@ -384,7 +385,7 @@ class ItemGrid{
 					var length = books.length
 					for(var j = 0; j < length; j++){
 						var book2 = books[j]
-						if(j === 0 || j === 1 && length % 2 === 0){
+						if(j === 0 || j === 1 && length % 2 === 0 || books[j].enchants.length >= 2){
 							cost += toolRepairCost + books[j].repairCost
 							toolRepairCost = (toolRepairCost << 1) + 1
 						}else{
