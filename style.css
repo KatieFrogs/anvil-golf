@@ -23,6 +23,11 @@ body{
 	justify-content: center;
 	gap: 10px;
 }
+@media (max-height: 400px){
+	#dialog{
+		justify-content: normal;
+	}
+}
 #dialog-inner{
 	display: flex;
 	gap: 10px;
@@ -204,6 +209,7 @@ button{
 	image-rendering: optimizeSpeed;
 	image-rendering: pixelated;
 	user-select: none;
+	min-height: 36px;
 }
 button:hover{
 	border-image-source: url(button-hover.png);

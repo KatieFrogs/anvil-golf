@@ -319,7 +319,7 @@ class ItemGrid{
 			costDiv.style.display = "block"
 		}else if(enchanting){
 			var enchants = (this.grid[36].enchants || []).concat(this.grid[37].enchants || [])
-			var repairCost = this.grid[36].repairCost > this.grid[37].repairCost ? this.grid[36].repairCost : this.grid[37].repairCost
+			var repairCost = Math.max(this.grid[36].repairCost, this.grid[37].repairCost)
 			this.replaceItem(38, this.grid[36].item, enchants, (repairCost << 1) + 1)
 			var costText = "Enchantment Cost: " + this.getCost()
 			if(costDiv.textContent !== costText){
@@ -383,22 +383,22 @@ class ItemGrid{
 				var toolRepairCost = 0
 				while(books.length){
 					var length = books.length
-					for(var j = 0; j < length; j++){
-						var book2 = books[j]
+					var otherIndex = 0
+					for(var j = 0; j < length - otherIndex; j++){
+						var otherBook = books[j]
 						if(j === 0 || j === 1 && length % 2 === 0 || books[j].enchants.length >= 2){
 							cost += toolRepairCost + books[j].repairCost
 							toolRepairCost = (toolRepairCost << 1) + 1
 						}else{
+							var otherBook = books[length - ++otherIndex]
 							books.push({
-								enchants: books[j].enchants.concat(books[j + 1].enchants),
-								repairCost: (books[j].repairCost << 1) + 1
+								enchants: books[j].enchants.concat(otherBook.enchants),
+								repairCost: (Math.max(books[j].repairCost, otherBook.repairCosts) << 1) + 1
 							})
-							cost += books[j].repairCost + books[j + 1].repairCost
-							book2 = books[j + 1]
-							j++
+							cost += books[j].repairCost + otherBook.repairCost
 						}
-						for(var k in book2.enchants){
-							cost += bookCost[book2.enchants[k].name] * (book2.enchants[k].level || 1)
+						for(var k in otherBook.enchants){
+							cost += bookCost[otherBook.enchants[k].name] * (otherBook.enchants[k].level || 1)
 						}
 					}
 					for(var j = 0; j < length; j++){

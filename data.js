@@ -69,7 +69,8 @@ var bestEnchants = {
 		"Trident",
 		"Mending",
 		"Unbreaking 3",
-		["Loyalty 3", "Channeling", "Riptide 3"],
+		["Loyalty 3", "Riptide 3"],
+		"Channeling",
 		"Impaling 5"
 	],
 	"Pickaxe": [
