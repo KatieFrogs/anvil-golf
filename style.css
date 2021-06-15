@@ -1,0 +1,211 @@
+@font-face{
+	font-family: Minecraft;
+	src: url("https://minecraft.fandom.com/media/hydra/fonts/minecraft.eot#iefix") format('embedded-opentype'),url(https://minecraft.fandom.com/media/hydra/fonts/minecraft.woff) format('woff'),url(https://minecraft.fandom.com/media/hydra/fonts/minecraft.ttf) format('truetype');
+}
+.text,
+.cost,
+.text-input,
+.tooltip,
+button,
+#guide,
+label{
+	font-family: Minecraft,sans-serif;
+	font-size: 16px;
+}
+body{
+	background-color: #00000080;
+}
+#dialog{
+	display: flex;
+	height: 100%;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 10px;
+}
+#dialog-inner{
+	display: flex;
+	gap: 10px;
+}
+#anvil-ui{
+	position: relative;
+	width: 352px;
+	height: 332px;
+	background-image: url(anvil-ui.png);
+	background-repeat: no-repeat;
+	background-size: 512px;
+	image-rendering: pixelated;
+}
+#anvil-ui::before,
+#anvil-ui::after{
+	content: "";
+	position: absolute;
+	background-image: inherit;
+	background-repeat: inherit;
+	background-size: inherit;
+	image-rendering: inherit;
+}
+#anvil-ui::before{
+	left: 118px;
+	top: 40px;
+	width: 220px;
+	height: 32px;
+	background-position: 0 -364;
+}
+#anvil-ui.rename::before{
+	background-position: 0 -332;
+}
+#anvil-ui::after{
+	display: none;
+	left: 198px;
+	top: 90px;
+	width: 56px;
+	height: 42px;
+	background-position: -352 0;
+}
+#anvil-ui.cross::after{
+	display: block;
+}
+.text{
+	position: absolute;
+	user-select: none;
+}
+.cost{
+	position: absolute;
+	display: none;
+	right: 16px;
+	top: 134px;
+	height: 24px;
+	color: #7efc20;
+	text-shadow: 0.125em 0.125em 0 #203e08;
+	padding: 4px 6px 6px 4px;
+	background-color: #898989;
+	cursor: default;
+	box-sizing: border-box;
+	z-index: 1;
+	user-select: none;
+}
+.cost.expensive{
+	color: #fc5f5f;
+	text-shadow: 0.125em 0.125em 0 #3e1818;
+}
+.text-input{
+	position: absolute;
+	left: 124px;
+	top: 48px;
+	color: #fff;
+	text-shadow: 0.125em 0.125em 0 #3e3e3e;
+	cursor: default;
+	user-select: none;
+}
+.grid{
+	position: absolute;
+	padding: 2px;
+}
+.grid .inner{
+	pointer-events: none;
+}
+.grid,
+.grid .inner,
+.grid .inner::after{
+	width: 32px;
+	height: 32px;
+}
+.grid .inner::after{
+	content: "";
+	display: block;
+}
+.grid:hover .inner::after{
+	background: #ffffff80;
+}
+.item{
+	background-image: url(items.png);
+	background-repeat: no-repeat;
+	background-size: auto 136px;
+	image-rendering: pixelated;
+}
+.grid[data-item="Enchanted Book"] .item{
+	background-image: url(enchanted-book.gif);
+	background-size: auto;
+	background-position: 0 0 !important;
+}
+.moved-item{
+	position: fixed;
+	left: 0;
+	top: 0;
+	z-index: 2;
+	pointer-events: none;
+}
+.moved-item.grid:hover .inner::after{
+	background-color: transparent;
+}
+
+.tooltip{
+	display: none;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background-color: #100010ef;
+	padding: 0.375em;
+	word-spacing: 4px;
+	white-space: nowrap;
+	line-height: 1.25em;
+	margin: 0.125em 0.25em;
+	pointer-events: none;
+	z-index: 9999;
+	color: #fff;
+	text-shadow: 0.125em 0.125em 0 #3e3e3e;
+}
+.tooltip>.description:not(:empty){
+	display: block;
+	margin-top: 0.25em;
+	white-space: pre-wrap;
+}
+.tooltip::before{
+	content: "";
+	position: absolute;
+	top: 0.125em;
+	right: -0.125em;
+	bottom: 0.125em;
+	left: -0.125em;
+	border: 0.125em solid #100010ef;
+	border-style: none solid;
+}
+.tooltip::after{
+	content: "";
+	position: absolute;
+	top: 0.125em;
+	right: 0;
+	bottom: 0.125em;
+	left: 0;
+	border: 0.125em solid;
+	border-image: linear-gradient(#5000ff4f,#28007f4f) 1;
+}
+
+#menu-buttons{
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+	height: 332px;
+	overflow: auto;
+	padding-right: 8px;
+}
+button{
+	color: #fff;
+	text-shadow: 0.125em 0.125em 0 #373737;
+	padding: 8px;
+	border-image: url(button.png) 2 2 3 fill / 4px 4px 6px / 0px repeat;
+	image-rendering: pixelated;
+	user-select: none;
+}
+button:hover{
+	border-image-source: url(button-hover.png);
+}
+#experience>span{
+	display: inline-block;
+	position: relative;
+	left: -1px;
+	top: -1px;
+	color: #00a800;
+	text-shadow: 0.125em 0.125em 0 #002900;
+}
