@@ -407,7 +407,7 @@ class ItemGrid{
 				experience.goal = cost
 				itemGrid.update()
 				if(randomCheckbox.checked){
-					enchants = enchants.sort(() => Math.random() < 0 ? 1 : -1)
+					enchants = enchants.sort(() => Math.random() < 0.5 ? 1 : -1)
 				}
 				for(var j in enchants){
 					itemGrid.replaceItem(index++, "Enchanted Book", [enchants[j]])
